@@ -82,6 +82,23 @@ app.MapPost("/api/produtos", async (ProdutoEstoqueEntradaDto dto, EstoqueContext
     return Results.Created($"/api/produtos/{produtoNovinho.Codigo}", produtoNovinho);
 });
 
+// apaga um produto do estoque. Nao precisei checar se o produto ja foi usado
+// em alguma nota fiscal porque o servico de Faturamento guarda uma "foto" da
+// descricao do produto no momento da venda (cada servico com seu proprio banco,
+// sem FK entre eles), entao apagar aqui nao quebra nota nenhuma la no outro lado.
+app.MapDelete("/api/produtos/{codigo}", async (string codigo, EstoqueContexto db) =>
+{
+    var produtoParaApagar = await db.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo);
+
+    if (produtoParaApagar is null)
+        throw new ProdutoNaoEncontradoExcecao(codigo);
+
+    db.Produtos.Remove(produtoParaApagar);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
 // endpoint interno chamado pelo servico de faturamento na hora de imprimir a nota
 // (baixa o saldo do produto). Coloquei um lock bem tosco pra tentar evitar
 // concorrencia bagunçando o saldo quando duas notas mexem no mesmo produto ao mesmo tempo.

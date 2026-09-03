@@ -45,4 +45,19 @@ export class ComponenteListaDeProdutos implements OnInit, OnDestroy {
       }
     });
   }
+
+  apagarEsseProdutoAqui(produto: ProdutoDoEstoque): void {
+    // confirm() nativo do navegador mesmo, sem frescura de modal customizado
+    const usuarioTemCertezaMesmo = confirm(`Apagar o produto ${produto.codigo} - ${produto.descricao}?`);
+
+    if (!usuarioTemCertezaMesmo) return;
+
+    this.servicoDeProduto.apagarProduto(produto.codigo).subscribe({
+      next: () => {
+        this.notificacao.mostrarSucesso('Produto apagado.');
+        this.recarregarListaDeProdutos();
+      },
+      error: () => { /* toast global ja avisa */ }
+    });
+  }
 }

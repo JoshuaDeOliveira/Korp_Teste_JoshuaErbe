@@ -19,4 +19,8 @@ export class ServicoDeProduto {
   cadastrarNovoProduto(produtoNovo: ProdutoParaCadastrar): Observable<ProdutoDoEstoque> {
     return this.http.post<ProdutoDoEstoque>(this.enderecoBaseDaApi, produtoNovo);
   }
+
+  apagarProduto(codigo: string): Observable<void> {
+    return this.http.delete<void>(`${this.enderecoBaseDaApi}/${codigo}`);
+  }
 }

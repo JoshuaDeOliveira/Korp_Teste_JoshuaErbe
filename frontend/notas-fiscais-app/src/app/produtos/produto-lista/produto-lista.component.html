@@ -23,8 +23,17 @@
     <td mat-cell *matCellDef="let produto">{{ produto.saldoAtual }}</td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="['codigo', 'descricao', 'saldoAtual']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['codigo', 'descricao', 'saldoAtual'];"></tr>
+  <ng-container matColumnDef="acoes">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let produto">
+      <button mat-icon-button color="warn" (click)="apagarEsseProdutoAqui(produto)" title="Apagar produto">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['codigo', 'descricao', 'saldoAtual', 'acoes']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['codigo', 'descricao', 'saldoAtual', 'acoes'];"></tr>
 </table>
 
 <p *ngIf="!estaCarregandoOsProdutos && listaDeProdutos.length === 0">Nenhum produto cadastrado ainda.</p>
