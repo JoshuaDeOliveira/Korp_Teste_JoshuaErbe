@@ -1,0 +1,45 @@
+<h2 class="titulo-da-pagina">Notas Fiscais</h2>
+
+<a mat-raised-button color="primary" routerLink="/notas/nova">+ Nova Nota</a>
+
+<div *ngIf="estaCarregandoAsNotas" style="margin-top:16px;">
+  <mat-spinner diameter="32"></mat-spinner>
+</div>
+
+<div *ngIf="!estaCarregandoAsNotas" style="margin-top:16px; display:flex; flex-direction:column; gap:12px;">
+
+  <mat-card *ngFor="let nota of listaDeNotas">
+    <mat-card-header>
+      <mat-card-title>Nota Nº {{ nota.numeroSequencial }}</mat-card-title>
+      <mat-card-subtitle>
+        Status:
+        <span [style.color]="produtoEstaAberta(nota) ? 'green' : 'gray'">
+          {{ produtoEstaAberta(nota) ? 'Aberta' : 'Fechada' }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <table style="width:100%;">
+        <tr *ngFor="let item of nota.itens">
+          <td>{{ item.codigoDoProduto }} - {{ item.descricaoDoProdutoNaHoraDaVenda }}</td>
+          <td style="text-align:right;">qtd: {{ item.quantidade }}</td>
+        </tr>
+      </table>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <!-- botao de impressao so aparece/fica habilitado se a nota estiver Aberta -->
+      <button mat-raised-button color="accent"
+              [disabled]="!produtoEstaAberta(nota) || numerosDeNotaImprimindoAgora.has(nota.numeroSequencial)"
+              (click)="imprimirEssaNotaAqui(nota)">
+
+        <mat-spinner *ngIf="numerosDeNotaImprimindoAgora.has(nota.numeroSequencial)" diameter="18" style="display:inline-block; margin-right:6px;"></mat-spinner>
+
+        {{ numerosDeNotaImprimindoAgora.has(nota.numeroSequencial) ? 'Imprimindo...' : (produtoEstaAberta(nota) ? 'Imprimir Nota' : 'Ja Impressa') }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <p *ngIf="listaDeNotas.length === 0">Nenhuma nota cadastrada ainda.</p>
+</div>

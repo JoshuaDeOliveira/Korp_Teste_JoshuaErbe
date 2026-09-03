@@ -1,0 +1,36 @@
+<h2 class="titulo-da-pagina">Nova Nota Fiscal</h2>
+
+<div style="background:white; padding:16px; border-radius:4px; max-width:600px; display:flex; flex-direction:column; gap:12px;">
+
+  <div style="display:flex; gap:8px; align-items:center;">
+    <mat-form-field appearance="outline" style="flex:1;">
+      <mat-label>Produto</mat-label>
+      <mat-select [(ngModel)]="codigoDoProdutoEscolhido">
+        <mat-option *ngFor="let produto of produtosDisponiveisNoEstoque" [value]="produto.codigo">
+          {{ produto.codigo }} - {{ produto.descricao }} (saldo: {{ produto.saldoAtual }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width:100px;">
+      <mat-label>Qtd</mat-label>
+      <input matInput type="number" [(ngModel)]="quantidadeEscolhida" min="1">
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="adicionarItemNaListaDaNota()">Adicionar</button>
+  </div>
+
+  <table style="width:100%;" *ngIf="itensJaAdicionadosNaNota.length > 0">
+    <tr *ngFor="let item of itensJaAdicionadosNaNota; let i = index">
+      <td>{{ item.codigoDoProduto }} - {{ item.descricaoDoProdutoNaHoraDaVenda }}</td>
+      <td>qtd: {{ item.quantidade }}</td>
+      <td><button mat-icon-button (click)="removerItemDaLista(i)"><mat-icon>delete</mat-icon></button></td>
+    </tr>
+  </table>
+
+  <p *ngIf="itensJaAdicionadosNaNota.length === 0">Nenhum item adicionado ainda.</p>
+
+  <button mat-raised-button color="primary" [disabled]="estaSalvandoANota" (click)="salvarNotaFiscal()">
+    {{ estaSalvandoANota ? 'Salvando...' : 'Salvar Nota (status Aberta)' }}
+  </button>
+</div>

@@ -1,0 +1,23 @@
+<h2 class="titulo-da-pagina">Cadastrar produto</h2>
+
+<form [formGroup]="formularioDoProduto" (ngSubmit)="salvarProduto()" style="display:flex; flex-direction:column; gap:12px; max-width:400px;">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Codigo</mat-label>
+    <input matInput formControlName="codigo">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Descricao</mat-label>
+    <input matInput formControlName="descricao">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Saldo inicial</mat-label>
+    <input matInput type="number" formControlName="saldoAtual">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="estaSalvando">
+    {{ estaSalvando ? 'Salvando...' : 'Salvar' }}
+  </button>
+</form>
