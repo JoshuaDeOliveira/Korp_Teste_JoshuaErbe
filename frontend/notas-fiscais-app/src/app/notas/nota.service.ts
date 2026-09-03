@@ -8,7 +8,7 @@ import { NotaFiscal, ItemParaEnviar } from './nota.model';
 export class ServicoDeNotaFiscal {
 
   // porta do servico de faturamento (diferente da porta do estoque, cada um no seu quadrado)
-  private enderecoBaseDaApi = 'http://localhost:5060/api/notas';
+  private enderecoBaseDaApi = 'http://localhost:5090/api/notas';
 
   constructor(private http: HttpClient) { }
 

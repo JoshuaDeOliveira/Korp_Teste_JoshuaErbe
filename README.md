@@ -10,7 +10,7 @@ Sistema de emissão de Notas Fiscais feito para o teste técnico da Korp. Compos
 Korp_Teste_SeuNome/
 ├── backend/
 │   ├── Servico.Estoque/          -> microsserviço de Produtos/Estoque (porta 5050)
-│   └── Servico.Faturamento/      -> microsserviço de Notas Fiscais (porta 5060)
+│   └── Servico.Faturamento/      -> microsserviço de Notas Fiscais (porta 5090)
 ├── frontend/
 │   └── notas-fiscais-app/        -> aplicação Angular
 ├── docs/
@@ -36,7 +36,7 @@ Em outro terminal:
 ```bash
 cd backend/Servico.Faturamento
 dotnet restore
-dotnet run --urls=http://localhost:5060
+dotnet run --urls=http://localhost:5090
 ```
 Confira em `appsettings.json` se `EnderecoDoServicoDeEstoque` aponta para `http://localhost:5050`.
 

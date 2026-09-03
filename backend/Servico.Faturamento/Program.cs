@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Servico.Faturamento.Clientes;
 using Servico.Faturamento.Dados;
@@ -10,6 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FaturamentoContexto>(opcoes =>
     opcoes.UseSqlite(builder.Configuration.GetConnectionString("BancoDeDadosFaturamento")));
+
+// trava extra de seguranca: se aparecer outro ciclo de referencia (tipo o do
+// Item -> Nota -> Item) que eu esqueci de marcar com [JsonIgnore], isso aqui
+// evita quebrar em erro 500 feio - ele so ignora o ciclo em vez de estourar excecao
+builder.Services.ConfigureHttpJsonOptions(opcoes =>
+{
+    opcoes.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 // registra o HttpClient que fala com o servico de estoque.
 // o endereco vem do appsettings pra nao ficar chumbado no codigo

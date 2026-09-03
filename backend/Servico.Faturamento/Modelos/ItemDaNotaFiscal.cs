@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Servico.Faturamento.Modelos;
 
 // cada linha de produto dentro da nota
@@ -13,5 +15,9 @@ public class ItemDaNotaFiscal
 
     public int NotaFiscalCabecalhoId { get; set; }
 
+    // [JsonIgnore] pq essa propriedade aponta de volta pra nota (Item -> Nota -> Itens -> Nota -> ...),
+    // isso criava um ciclo infinito na hora de virar JSON pra mandar pro Angular. Bug feio que passou
+    // batido ate eu testar de verdade rodando (nao pega em compilacao, so em runtime).
+    [JsonIgnore]
     public NotaFiscalCabecalho? NotaPai { get; set; }
 }
