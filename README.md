@@ -1,21 +1,6 @@
-# Korp_Teste_SeuNome
-
-> Obs: troca "SeuNome" pelo seu nome de verdade no nome do repositório antes de subir pro GitHub (ex: `Korp_Teste_JoaoSilva`), e também troca esse trecho de instrução por um resumo curto do projeto quando for gravar o vídeo.
+# Korp_Teste_JoshuaErbe
 
 Sistema de emissão de Notas Fiscais feito para o teste técnico da Korp. Composto por **2 microsserviços em C#/.NET 8** (Estoque e Faturamento) e um **front-end em Angular 17**.
-
-## Estrutura de pastas
-
-```
-Korp_Teste_SeuNome/
-├── backend/
-│   ├── Servico.Estoque/          -> microsserviço de Produtos/Estoque (porta 5050)
-│   └── Servico.Faturamento/      -> microsserviço de Notas Fiscais (porta 5090)
-├── frontend/
-│   └── notas-fiscais-app/        -> aplicação Angular
-├── docs/
-└── README.md
-```
 
 ## Como rodar
 
@@ -65,7 +50,7 @@ Acesse `http://localhost:4200`.
 - **`ngOnDestroy`**: usado em `ComponenteListaDeProdutos` e `ComponenteListaDeNotas` para cancelar (`unsubscribe`) as subscriptions RxJS abertas e evitar vazamento de memória quando o usuário sai da tela.
 
 ### Uso do RxJS
-Sim, foi usado em vários pontos:
+Usado em vários pontos:
 - **`Observable` + `.subscribe()`**: toda comunicação HTTP com os dois microsserviços (via `HttpClient`) retorna `Observable`.
 - **`catchError`** (`interceptador-de-erros.ts`): um `HttpInterceptor` global captura qualquer erro HTTP de qualquer chamada da aplicação e dispara um toast de notificação — assim não é preciso tratar erro em cada componente separadamente.
 - **`finalize`**: usado em `nota-lista.component.ts` para garantir que o spinner de "imprimindo..." pare de girar independente da chamada ter dado certo ou erro.
@@ -91,7 +76,7 @@ O back-end foi feito em **C#**, não em Golang, então o gerenciamento de depend
 - **Cenário de falha entre microsserviços**: o `ClienteEstoqueRemoto` (dentro do Faturamento) faz até 3 tentativas com backoff simples ao chamar o Estoque; se todas falharem, lança `EstoqueIndisponivelExcecao`, que vira um HTTP 503 — a nota **permanece Aberta** (não é fechada pela metade) e o front-end mostra a mensagem de erro via toast, permitindo tentar imprimir de novo depois que o serviço voltar.
 
 ### Uso de LINQ
-Sim, usado bastante no back-end C#, por exemplo:
+usado no back-end C#, por exemplo:
 - `db.Produtos.OrderBy(p => p.Codigo).ToListAsync()` — listagem ordenada de produtos.
 - `db.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo)` — busca por código.
 - `db.Notas.MaxAsync(n => n.NumeroSequencial)` — cálculo do próximo número sequencial da nota.
@@ -104,12 +89,3 @@ Endpoint `DELETE /api/produtos/{codigo}` no `Servico.Estoque`, com botão de lix
 - **Idempotência**: header `X-Chave-Idempotencia` enviado pelo front no momento da impressão; o Faturamento guarda em cache (`CacheDeRequisicoesRepetidas`, em memória) as chaves já processadas para não duplicar a baixa de estoque em caso de clique duplo/reenvio.
 - **Concorrência**: implementado de forma simples, com um `SemaphoreSlim` no Servico.Estoque protegendo o trecho que lê e decrementa o saldo, evitando que duas notas simultâneas "furem" o saldo de um produto com 1 unidade. É uma solução básica (lock em memória de uma única instância), não um controle distribuído — daria pra evoluir usando concorrência otimista do próprio EF Core (`RowVersion`), mas para o escopo do teste ficou assim.
 - **IA**: não implementado por falta de tempo dentro do prazo do teste.
-
----
-
-## Itens para o vídeo de apresentação
-1. Mostrar as 4 telas (lista de produtos, cadastro de produto, lista de notas, cadastro de nota).
-2. Mostrar o fluxo completo: cadastrar produto -> criar nota -> imprimir nota -> saldo atualizado.
-3. Mostrar a nota "trancada" pra reimpressão.
-4. Mostrar o cenário de falha (derrubar o Servico.Estoque e tentar imprimir).
-5. Passar rapidamente pelo código explicando os pontos do "Detalhamento técnico" acima.
